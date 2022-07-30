@@ -1,8 +1,20 @@
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
-
+import PropTypes from 'prop-types'
 export class News extends Component {
+static defaultProps={
+  country:'in',
+  pageSize:15,
+  category:'general',
+}
+ PropTypes={
+  country:PropTypes.string,
+  pageSize:PropTypes.number,
+  category:PropTypes.string,
+}
+
+
   articles = [];
   constructor() {
     super();
@@ -15,7 +27,7 @@ export class News extends Component {
 
   async componentDidMount() {
     this.setState({loading:true})
-      const response = await fetch(`https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=1`);
+      const response = await fetch(`https://newsapi.org/v2/top-headlines?language=en&country=${this.props.country}&category=${this.props.category}&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=1`);
     
       if (!response.ok) {
         throw new Error(`Error! status: ${response.status}`);
@@ -33,7 +45,7 @@ export class News extends Component {
   nextclick = async () => {
     if (!(this.state.page + 1 > Math.ceil(this.state.total / this.props.pageSize)) ){
       this.setState({loading:true})
-      const response = await fetch(`https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=${this.state.page + 1}`);
+      const response = await fetch(`https://newsapi.org/v2/top-headlines?language=en&country=${this.props.country}&category=${this.props.category}&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=${this.state.page + 1}`);
       
       const result = await response.json();
       this.setState({
@@ -46,7 +58,7 @@ export class News extends Component {
 
   previousclick = async () => {
     this.setState({loading:true})
-    const response = await fetch(`https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=${this.state.page - 1}`);
+    const response = await fetch(`https://newsapi.org/v2/top-headlines?language=en&country=${this.props.country}&category=${this.props.category}&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=${this.state.page - 1}`);
     const result = await response.json();
     this.setState({
       page: this.state.page - 1,
@@ -67,7 +79,7 @@ export class News extends Component {
               
               <div className="col-md-4 my-3" key={index}>
                 <NewsItem
-                  title={element.title}
+                  title={element.title ? element.title.slice(0, 43) : ""}
                   description={
                     element.description ? element.description.slice(0, 88) : ""
                   }
@@ -80,7 +92,7 @@ export class News extends Component {
                   publishedAt={
                     element.publishedAt ? element.publishedAt : "Today"
                   }
-                  author={element.author ? element.author : "Source"}
+                  author={element.author ? element.author.slice(0, 20) : "Source"}
                   content={element.content}
                 />
               </div>
@@ -89,7 +101,7 @@ export class News extends Component {
         </div>
 
         <div
-          className="btn-toolbar-lg"
+          className="btn-toolbar-lg text-center"
           role="toolbar"
           aria-label="Toolbar with button groups"
         >
