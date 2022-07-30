@@ -14,12 +14,9 @@ export class News extends Component {
   }
 
   async componentDidMount() {
-    try {
-
-      const response = await fetch(
-        `https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=1`
-      );
-      this.setState({loading:true})
+    this.setState({loading:true})
+      const response = await fetch(`https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=1`);
+    
       if (!response.ok) {
         throw new Error(`Error! status: ${response.status}`);
       } else {
@@ -27,38 +24,34 @@ export class News extends Component {
         this.setState({
           articles: result.articles,
           total: result.totalResults,
-          loading:true
+          loading:false
         });
       }
-    } catch (err) {
-      console.log(err);
-    }
+     
   }
 
   nextclick = async () => {
-    if (this.state.page + 1 > Math.ceil(this.state.total / 20)) {
-    } else {
-      const response = await fetch(
-        `https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=${this.state.page + 1}`
-      );
+    if (!(this.state.page + 1 > Math.ceil(this.state.total / this.props.pageSize)) ){
+      this.setState({loading:true})
+      const response = await fetch(`https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=${this.state.page + 1}`);
+      
       const result = await response.json();
-      console.log(result);
       this.setState({
         page: this.state.page + 1,
         articles: result.articles,
+        loading:false,
       });
     }
   };
 
   previousclick = async () => {
-    const response = await fetch(
-      `https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=${this.state.page - 1}`
-    );
+    this.setState({loading:true})
+    const response = await fetch(`https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=${this.state.page - 1}`);
     const result = await response.json();
-    console.log(result);
     this.setState({
       page: this.state.page - 1,
       articles: result.articles,
+      loading:false
     });
   };
 
@@ -66,10 +59,12 @@ export class News extends Component {
     return (
       <div className="container my-3">
         <h1 className="text-center my-3">IndianNews</h1>
+        {this.state.loading && <Spinner/>}
         <div className="row">
-            <Spinner/>
-          {this.state.articles.map((element, index) => {
+            
+          {!this.state.loading && this.state.articles.map((element, index) => {
             return (
+              
               <div className="col-md-4 my-3" key={index}>
                 <NewsItem
                   title={element.title}
