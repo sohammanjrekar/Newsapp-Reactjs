@@ -17,7 +17,7 @@ export class News extends Component {
     try {
 
       const response = await fetch(
-        "https://newsapi.org/v2/everything?q=tesla&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=18&page=1"
+        `https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=1`
       );
       this.setState({loading:true})
       if (!response.ok) {
@@ -39,9 +39,7 @@ export class News extends Component {
     if (this.state.page + 1 > Math.ceil(this.state.total / 20)) {
     } else {
       const response = await fetch(
-        `https://newsapi.org/v2/everything?q=tesla&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=18&page=${
-          this.state.page + 1
-}`
+        `https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=${this.state.page + 1}`
       );
       const result = await response.json();
       console.log(result);
@@ -54,9 +52,7 @@ export class News extends Component {
 
   previousclick = async () => {
     const response = await fetch(
-      `https://newsapi.org/v2/everything?q=tesla&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=18&page=${
-        this.state.page - 1
-      }`
+      `https://newsapi.org/v2/everything?q=${this.props.topic}&from=2022-06-29&sortBy=publishedAt&apiKey=faa4be120672496ab2d47b2a2de16ebe&pageSize=${this.props.pageSize}&page=${this.state.page - 1}`
     );
     const result = await response.json();
     console.log(result);
