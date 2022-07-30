@@ -70,7 +70,8 @@ static defaultProps={
   render() {
     return (
       <div className="container my-3">
-        <h1 className="text-center my-3">IndianNews</h1>
+        <h1 className="text-center my-3">IndianNews -Top Headlines</h1>
+        <hr className="hr-primary"/>
         {this.state.loading && <Spinner/>}
         <div className="row">
             
