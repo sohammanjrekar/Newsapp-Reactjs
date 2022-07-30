@@ -6,7 +6,7 @@ export class NewsItem extends Component {
     return (
       <div className="card">
          <div className="card-header">
-    By   {author} <br></br>{publishedAt}
+    By   {author} on <br></br>{new Date(publishedAt).toGMTString()}
   </div>
         <img src={url} className="card-img-top" alt={title} style={{ height: "15rem"}}></img>
         <div className="card-body">
